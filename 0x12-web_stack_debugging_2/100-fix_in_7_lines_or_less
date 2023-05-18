@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Script that runs Nginx as Nginx in a shorter way
+
+service nginx stop
+sed -i 's/user\s*nginx/user nginx\n\tlisten 8080/' /etc/nginx/nginx.conf
+sed -i 's/listen\s*80/listen 8080/' /etc/nginx/sites-available/default
+chown -R nginx:nginx /var/www/html/
+chown -R nginx:nginx /var/log/nginx/
+service nginx start

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Script that runs Nginx server
+
+# Stop the Nginx service
+service nginx stop
+
+# Update the Nginx configuration file
+sed -i 's/user\s*nginx;/user nginx;\n\tlisten 8080;/g' /etc/nginx/nginx.conf
+
+# Update the Nginx default site configuration
+sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/sites-available/default
+
+# Change ownership of Nginx directories and files
+chown -R nginx:nginx /var/www/html/
+chown -R nginx:nginx /var/log/nginx/
+
+# Start the Nginx service
+service nginx start
