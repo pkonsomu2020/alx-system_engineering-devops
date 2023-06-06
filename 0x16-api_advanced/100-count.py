@@ -6,33 +6,40 @@ and prints a sorted count of given keywords
 
 import requests
 
-def count_words(subreddit, word_list, after=None, count_dict=None):
-    if count_dict is None:
-        count_dict = {}
+def count_words(subreddit, word_list, after="", dictionary=None):
+    if dictionary is None:
+        dictionary = {}
 
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=100"
-    headers = {'User-Agent': 'Mozilla/5.0'}  # Set a custom User-Agent header
-    params = {'after': after} if after else {}
-    response = requests.get(url, headers=headers, params=params)
+    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
+    headers = {"User-Agent": "Mozilla/5.0"}
+    params = {"after": after}
+    data = requests.get(url, headers=headers, params=params,
+                        allow_redirects=False)
 
-    if response.status_code == 200:
-        data = response.json()
-        posts = data['data']['children']
-        for post in posts:
-            title = post['data']['title'].lower()
+    if data.status_code == 200:
+        results = data.json().get("data")
+        after = results.get("after")
+
+        for entry in results.get("children"):
+            split = entry.get("data").get("title").lower().split()
+
             for word in word_list:
-                word = word.lower()
-                if word not in count_dict:
-                    count_dict[word] = 0
-                count_dict[word] += title.count(word)
+                if word in split:
+                    if word in dictionary:
+                        dictionary[word] += 1
+                    else:
+                        dictionary[word] = 1
 
-        after = data['data']['after']
         if after:
-            count_words(subreddit, word_list, after=after, count_dict=count_dict)
+            count_words(subreddit, word_list, after, dictionary)
         else:
-            sorted_counts = sorted(count_dict.items(), key=lambda x: (-x[1], x[0]))
-            for word, count in sorted_counts:
-                if count > 0:
-                    print(f"{word}: {count}")
+            # sort the dictionary by value
+            if len(dictionary) == 0:
+                print("")
+                return
+            dictionary = dict(sorted(dictionary.items(), key=lambda x: x[1],
+                              reverse=True))
+            for key, value in dictionary.items():
+                print("{}: {}".format(key, value))
     else:
-        print("None")
+        print("")
