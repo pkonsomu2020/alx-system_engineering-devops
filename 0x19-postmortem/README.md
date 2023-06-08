@@ -1,5 +1,7 @@
 # Postmortem - Web Stack Outage
 ## Service Degradation and Unresponsive API
+![POSTMOTEM BG](https://github.com/pkonsomu2020/alx-system_engineering-devops/assets/113601561/ed14ca9f-84e0-46f7-83c9-3cb7ac0f6391)
+
 ### Issue Summary
 Duration: May 15, 2023, 10:00 AM - May 15, 2023, 2:00 PM (UTC)
 Impact: The web service experienced intermittent slowdowns and unresponsiveness, resulting in degraded user experience and increased error rates. Approximately 30% of users were affected during the outage period.
